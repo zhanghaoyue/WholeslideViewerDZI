@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	  	<meta charset="UTF-8">
+	 	<title>Wholeslide Viewer Pure JS version</title>
+	 	<script type="text/javascript" src="static/jquery-3.2.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.5/js/uikit.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tour/0.11.0/js/bootstrap-tour-standalone.min.js"></script>
+	 	<script type="text/javascript" src="static/fabric.js"></script>
+	    <script type="text/javascript" src="static/openseadragon.min.js"></script>
+		<script type="text/javascript" src="static/FileSaver.js"></script>
+		<script type="text/javascript" src="static/openseadragonselection.js"></script>
+        <script type="text/javascript" src="static/openseadragon-scalebar.js"></script>
+		<script type="text/javascript" src="static/openseadragonScreenshot.js"></script>
+		<script type="text/javascript" src="static/openseadragon-fabricjs-overlay.js"></script>
+		<script type="text/javascript" src="static/openseadragon-imaginghelper.js"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='image_data_location.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
+		<link rel="stylesheet" href="static/css/main.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.27.5/css/uikit.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tour/0.11.0/css/bootstrap-tour-standalone.min.css" />
+	</head>
+	<body>
+
+		<div uk-sticky="offset: 100" class = "uk-navbar-container uk-sticky uk-sticky-fixed">
+			<div class="uk-marin">
+				<nav class = "uk-navbar">		
+					<div class="uk-navbar-nav">
+						<button id='patient_button' class="uk-button uk-button-primary uk-margin-small-left" data-uk-offcanvas="{target:'#offcanvas-menu', mode:'slide'}"><i class="uk-icon-bars"></i> Patients</button>
+						<a href="https://www.mii.ucla.edu/" class = "uk-logo">
+							<img src="http://www.mii.ucla.edu/images/logos/logo.svg" class = "uk-margin-small-right uk-svg">
+							<div class="'uk-text-middle" style="color:black">Wholeslide Image Viewer</div>
+						</a>
+						<button id='tutorial_button' class="uk-button uk-button-secondary uk-margin-small-left"><i class="uk-icon-bell"></i> Tutorials</button>	
+					</div>
+					<div class="uk-navbar-right">
+						<ul class="uk-navbar-nav">
+							<li class="uk-parent">
+								<a id = 'drawing-mode' href="#" class="uk-button uk-button-default uk-visible@m"><i class='uk-icon-pencil'></i> drawing mode</a>
+									<div id='drawing-mode-options' class="uk-navbar-dropdown">
+										<label for="drawing-mode-selector">Mode:</label>
+										<select id="drawing-mode-selector" class="uk-select">
+											<option>Pencil</option>
+											<option>Circle</option>
+											<option>Spray</option>
+											<option>Pattern</option>
+											<option>hline</option>
+											<option>vline</option>
+											<option>square</option>
+											<option>diamond</option>
+											<option>texture</option>
+										</select>
+										<br>
+										<label for="drawing-line-width">Line width:</label>
+										<span class="uk-text-primary">30</span>
+										<input class="uk-range" type="range" value="30" min="0" max="150" id="drawing-line-width">
+										<br>
+										<label for="drawing-color">Line color:</label>
+										<input type="color" value="#005E7A" id="drawing-color">
+										<br>
+										<label for="drawing-shadow-color">Shadow color:</label>
+										<input type="color" value="#005E7A" id="drawing-shadow-color">
+										<br>
+										<label for="drawing-shadow-width">Shadow width:</label>
+										<span class="uk-text-primary">0</span>
+										<input class="uk-range" type="range" value="0" min="0" max="50" id="drawing-shadow-width">
+										<br>
+										<label for="drawing-shadow-offset">Shadow offset:</label>
+										<span class="uk-text-primary">0</span>
+										<input class="uk-range" type="range" value="0" min="0" max="50" id="drawing-shadow-offset">
+										<br>
+									</div>
+							</li>
+							<li class="uk-hidden-small">
+								<a id = 'clear-canvas' href="#" class="uk-button uk-button-default uk-visible@m"><i class = 'uk-icon-trash'></i> Clear Drawing</a>
+							</li>
+							<button id="toggle-overlay" href='#' class="uk-button uk-button-danger"><i class='uk-icon-search'></i> Prediction Mask</button>
+						</ul>
+					</div>	
+				</nav>
+			</div>								
+		</div>
+
+		<div id="offcanvas-menu" class="uk-offcanvas">
+				<div class="uk-offcanvas-bar">
+					<ul class="patient_menu uk-nav uk-nav-offcanvas" data-uk-nav>
+						<li id = "patient_1" class="uk-active"><a href="#"><i class="uk-icon-user-md"></i> Patient 1</a></li>
+						<li id = "patient_2"><a href="#"><i class="uk-icon-user-md"></i> Patient 2</a></li>
+						<li id = "patient_3"><a href="#"><i class="uk-icon-user-md"></i> Patient 3</a></li>
+						<li id = "patient_4"><a href="#"><i class="uk-icon-user-md"></i> Patient 4</a></li>
+						<li id = "patient_5"><a href="#"><i class="uk-icon-user-md"></i> Patient 5</a></li>
+						<li id = "patient_6"><a href="#"><i class="uk-icon-user-md"></i> Patient 6</a></li>
+						<li id = "patient_7"><a href="#"><i class="uk-icon-user-md"></i> Patient 7</a></li>
+						<li id = "patient_8"><a href="#"><i class="uk-icon-user-md"></i> Patient 8</a></li>
+						<li id = "patient_9"><a href="#"><i class="uk-icon-user-md"></i> Patient 9</a></li>
+						<li id = "patient_10"><a href="#"><i class="uk-icon-user-md"></i> Patient 10</a></li>
+					 	<li id = "patient_11"><a href="#"><i class="uk-icon-user-md"></i> Patient 11</a></li>
+					   	<li id = "patient_12"><a href="#"><i class="uk-icon-user-md"></i> Patient 12</a></li>
+					   	<li id = "patient_13"><a href="#"><i class="uk-icon-user-md"></i> Patient 13</a></li>
+					   	<li id = "patient_14"><a href="#"><i class="uk-icon-user-md"></i> Patient 14</a></li>
+					  	<li id = "patient_15"><a href="#"><i class="uk-icon-user-md"></i> Patient 15</a></li>
+					   	<li id = "patient_16"><a href="#"><i class="uk-icon-user-md"></i> Patient 16</a></li>
+						<li id = "patient_17"><a href="#"><i class="uk-icon-user-md"></i> Patient 17</a></li>
+					  	<li id = "patient_18"><a href="#"><i class="uk-icon-user-md"></i> Patient 18</a></li>
+					   	<li id = "patient_19"><a href="#"><i class="uk-icon-user-md"></i> Patient 19</a></li>
+					  	<li id = "patient_20"><a href="#"><i class="uk-icon-user-md"></i> Patient 20</a></li>
+					   	<li id = "patient_21"><a href="#"><i class="uk-icon-user-md"></i> Patient 21</a></li>
+					  	<li id = "patient_22"><a href="#"><i class="uk-icon-user-md"></i> Patient 22</a></li>
+					   	<li id = "patient_23"><a href="#"><i class="uk-icon-user-md"></i> Patient 23</a></li>		
+						<li id = "patient_24"><a href="#"><i class="uk-icon-user-md"></i> Patient 24</a></li>
+						<li id = "patient_25"><a href="#"><i class="uk-icon-user-md"></i> Patient 25</a></li>
+						<li id = "patient_26"><a href="#"><i class="uk-icon-user-md"></i> Patient 26</a></li>
+						<li id = "patient_27"><a href="#"><i class="uk-icon-user-md"></i> Patient 27</a></li>
+						<li id = "patient_28"><a href="#"><i class="uk-icon-user-md"></i> Patient 28</a></li>
+						<li id = "patient_29"><a href="#"><i class="uk-icon-user-md"></i> Patient 29</a></li>
+					   	<li id = "patient_30"><a href="#"><i class="uk-icon-user-md"></i> Patient 30</a></li>
+						<li id = "patient_31"><a href="#"><i class="uk-icon-user-md"></i> Patient 31</a></li>
+					  	<li id = "patient_32"><a href="#"><i class="uk-icon-user-md"></i> Patient 32</a></li>
+					  	<li id = "patient_33"><a href="#"><i class="uk-icon-user-md"></i> Patient 33</a></li>		       
+					</ul>    		
+				</div>	
+		</div>
+
+		<div id="view" class="uk-container" style="height: 100vh; width: 100vw"></div>
+
+	</body>    
+</html>
+
